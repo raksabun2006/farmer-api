@@ -1,0 +1,59 @@
+spring:
+  application:
+    name: farmer
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${URL}
+    username: ${USERNAME}
+    password: ${PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  port: 2829
+bakong:
+  api:
+    token: ${token}
+  account:
+    id: ${accountId}
+  merchant:
+    name: BUN RAKSA
+    city: Phnom Penh
+#aba:
+#  payway:
+#    merchant:
+#      id: 126061814172620
+#    api:
+#      key: your_sandbox_api_key
+#      url: https://checkout-sandbox.payway.com.kh/api/payment-gateway/v3/purchase
+#aba:
+#  payway:
+#    api-url: https://checkout-sandbox.payway.com.kh/api/payment-gateway/v1/payments/generate-qr
+#    merchant-id: "126061814172620"  # Use your merchant ID here
+#    api-key: "YOUR_ABA_API_KEY"
+#bakong:
+#  api:
+#    base-url: "https://api-bakong-sandbox.nbc.org.kh"
+#    # Use ABA's public sandbox testing token
+#    token: "STR768261814172620743a6d2138b1395b0"
+#  account:
+#    # Use ABA's official public sandbox merchant ID
+#    id: "ec435678"
+#  merchant:
+#    name: "BUN RAKSA"
+#    city: "PHNOM PENH"
+#  account:
+#    id: "0968782196@acld"
+
+  # កុំភ្លេចដូរឈ្មោះ Merchant ឱ្យត្រូវនឹងឈ្មោះគណនីអេស៊ីលីដារបស់អ្នក
+#  merchant:
+#    name: "BUN RAKSA ACLEDA"
+#    city: "PHNOM PENH"
+app:
+  jwt:
+    secret: abcdefghijklmnopqrstuvwxyz1234567890YOUR_SECRET_KEY_HERE
