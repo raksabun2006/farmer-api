@@ -2,6 +2,8 @@ package co.cambodia.farmer.service.impl;
 
 import co.cambodia.farmer.domain.Category;
 import co.cambodia.farmer.domain.Farmer;
+import co.cambodia.farmer.domain.MovementReferenceType;
+import co.cambodia.farmer.domain.MovementType;
 import co.cambodia.farmer.domain.Product;
 import co.cambodia.farmer.dto.product.ProductRequest;
 import co.cambodia.farmer.dto.product.ProductResponse;
@@ -10,11 +12,15 @@ import co.cambodia.farmer.mapper.ProductMapper;
 import co.cambodia.farmer.repository.CategoryRepository;
 import co.cambodia.farmer.repository.FarmerRepository;
 import co.cambodia.farmer.repository.ProductRepository;
+import co.cambodia.farmer.service.InventoryService;
 import co.cambodia.farmer.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,27 +31,48 @@ public class ProductServiceImpl implements ProductService {
     private final FarmerRepository farmerRepository;
     private final CategoryRepository categoryRepository;
     private final ProductMapper productMapper;
+    @Lazy
+    private final InventoryService inventoryService;
 
     @Override
     @Transactional
     public ProductResponse createProduct(ProductRequest request) {
         Farmer farmer = farmerRepository.findById(request.farmerId())
-                .orElseThrow(() -> new ResourceNotFoundException("Farmer profile not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Farmer not found with id: " + request.farmerId()));
+
         Category category = categoryRepository.findById(request.categoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + request.categoryId()));
 
         Product product = productMapper.toEntity(request);
         product.setFarmer(farmer);
         product.setCategory(category);
 
-        return productMapper.toResponse(productRepository.save(product));
+        int initialQty = (product.getQuantity() != null) ? product.getQuantity() : 0;
+        product.setQuantity(0); // Set to 0 and record initial stock movement
+
+        Product savedProduct = productRepository.save(product);
+
+        if (initialQty > 0) {
+            inventoryService.recordMovement(
+                    savedProduct,
+                    MovementType.STOCK_IN,
+                    initialQty,
+                    savedProduct.getPrice(),
+                    MovementReferenceType.INITIAL_STOCK,
+                    null,
+                    "Initial stock on product creation",
+                    "SYSTEM"
+            );
+        }
+
+        return productMapper.toResponse(savedProduct);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public ProductResponse getProductById(Long id) {
+    public ProductResponse getProductById(UUID id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product variant not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
         return productMapper.toResponse(product);
     }
 
@@ -59,7 +86,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProductResponse> getProductsByFarmer(Long farmerId) {
+    public List<ProductResponse> getProductsByFarmer(UUID farmerId) {
         return productRepository.findByFarmerId(farmerId).stream()
                 .map(productMapper::toResponse)
                 .collect(Collectors.toList());
@@ -67,7 +94,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProductResponse> getProductsByCategory(Long categoryId) {
+    public List<ProductResponse> getProductsByCategory(UUID categoryId) {
         return productRepository.findByCategoryId(categoryId).stream()
                 .map(productMapper::toResponse)
                 .collect(Collectors.toList());
@@ -75,18 +102,30 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductResponse updateProduct(Long id, ProductRequest request) {
+    public ProductResponse updateProduct(UUID id, ProductRequest request) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+
         Farmer farmer = farmerRepository.findById(request.farmerId())
-                .orElseThrow(() -> new ResourceNotFoundException("Farmer profile not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Farmer not found with id: " + request.farmerId()));
+
         Category category = categoryRepository.findById(request.categoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + request.categoryId()));
 
         product.setName(request.name());
+        product.setNameKh(request.nameKh());
         product.setDescription(request.description());
+        product.setDescriptionKh(request.descriptionKh());
         product.setPrice(request.price());
-        product.setQuantity(request.quantity());
+        if (request.unit() != null && !request.unit().isBlank()) {
+            product.setUnit(request.unit().toUpperCase());
+        }
+        if (request.status() != null && !request.status().isBlank()) {
+            product.setStatus(request.status().toUpperCase());
+        }
+        if (request.lowStockThreshold() != null) {
+            product.setLowStockThreshold(request.lowStockThreshold());
+        }
         product.setImage(request.image());
         product.setFarmer(farmer);
         product.setCategory(category);
@@ -96,7 +135,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public void deleteProduct(Long id) {
+    public void deleteProduct(UUID id) {
         if (!productRepository.existsById(id)) {
             throw new ResourceNotFoundException("Product not found with id: " + id);
         }

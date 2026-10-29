@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.UUID;
+
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/v1/farmers")
@@ -21,16 +23,9 @@ public class FarmerController {
     public ResponseEntity<FarmerResponse> createFarmer(@Valid @RequestBody FarmerRequest request) {
         return new ResponseEntity<>(farmerService.createFarmer(request), HttpStatus.CREATED);
     }
-//    @PutMapping("/{id}")
-//    public ResponseEntity<FarmerResponse> updateProfileFarmer(
-//            @PathVariable Long id,
-//            @Valid @RequestBody FarmerRequest request) {
-//
-//        FarmerResponse response = farmerService.updateProfileFarmer(id, request);
-//        return ResponseEntity.ok(response);
-//    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<FarmerResponse> getFarmerById(@PathVariable Long id) {
+    public ResponseEntity<FarmerResponse> getFarmerById(@PathVariable UUID id) {
         return ResponseEntity.ok(farmerService.getFarmerById(id));
     }
 
@@ -39,10 +34,9 @@ public class FarmerController {
         return ResponseEntity.ok(farmerService.getAllFarmers());
     }
 
-
     @PutMapping("/{id}")
     public ResponseEntity<FarmerResponse> updateFarmer(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @Valid @RequestBody FarmerRequest request) {
         FarmerResponse response = farmerService.updateFarmer(id, request);
         return ResponseEntity.ok(response);
@@ -50,14 +44,14 @@ public class FarmerController {
 
     @PutMapping("/{id}/profile")
     public ResponseEntity<FarmerResponse> updateProfileFarmer(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @Valid @RequestBody FarmerRequest request) {
         FarmerResponse response = farmerService.updateProfileFarmer(id, request);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFarmer(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteFarmer(@PathVariable UUID id) {
         farmerService.deleteFarmer(id);
         return ResponseEntity.noContent().build();
     }

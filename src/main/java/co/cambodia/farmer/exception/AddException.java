@@ -13,39 +13,54 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Slf4j
 @RestControllerAdvice
 @Builder
 public class AddException {
+
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<?> handleServiceException(
-            ResponseStatusException e
-    ){
-       ErrorResponse<?> errorResponse = ErrorResponse.builder()
-               .status(false)
-               .code(e.getStatusCode().value())
-               .message(e.getReason())
-               .build();
-       return new ResponseEntity<>(errorResponse,e.getStatusCode());
+    public ResponseEntity<?> handleServiceException(ResponseStatusException e) {
+        ErrorResponse<?> errorResponse = ErrorResponse.builder()
+                .status(false)
+                .code(e.getStatusCode().value())
+                .message(e.getReason())
+                .build();
+        return new ResponseEntity<>(errorResponse, e.getStatusCode());
     }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<?> handleNotFoundException(ResourceNotFoundException e) {
+        ErrorResponse<?> errorResponse = ErrorResponse.builder()
+                .status(false)
+                .code(HttpStatus.NOT_FOUND.value())
+                .message(e.getMessage())
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
+    public ResponseEntity<?> handleBadRequestException(RuntimeException e) {
+        ErrorResponse<?> errorResponse = ErrorResponse.builder()
+                .status(false)
+                .code(HttpStatus.BAD_REQUEST.value())
+                .message(e.getMessage())
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ErrorResponse<?> handleValidationException(
-            MethodArgumentNotValidException e
-    ) {
+    public ErrorResponse<?> handleValidationException(MethodArgumentNotValidException e) {
         log.error("Validation Exception happened");
 
         List<FieldErrorResponse> fields = new ArrayList<>();
-
-        e.getFieldErrors()
-                .forEach(fieldError -> {
-                    FieldErrorResponse field = FieldErrorResponse.builder()
-                            .field(fieldError.getField())
-                            .message(fieldError.getDefaultMessage())
-                            .build();
-                    fields.add(field);
-                });
+        e.getFieldErrors().forEach(fieldError -> {
+            FieldErrorResponse field = FieldErrorResponse.builder()
+                    .field(fieldError.getField())
+                    .message(fieldError.getDefaultMessage())
+                    .build();
+            fields.add(field);
+        });
 
         return ErrorResponse.builder()
                 .status(false)
@@ -54,5 +69,4 @@ public class AddException {
                 .errors(fields)
                 .build();
     }
-
 }

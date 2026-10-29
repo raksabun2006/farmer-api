@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +39,7 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     @Transactional(readOnly = true)
-    public DashboardSummary getFarmerMetrics(Long farmerId) {
+    public DashboardSummary getFarmerMetrics(UUID farmerId) {
         long products = productRepository.findByFarmerId(farmerId).size();
 
         return new DashboardSummary(1, 0, products, 0, BigDecimal.ZERO, new HashMap<>());

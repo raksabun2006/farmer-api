@@ -63,7 +63,7 @@ public class AuthServiceImpl implements AuthService {
                     .claim("exp", nowInSeconds + oneDayInSeconds)
                     .claim("roles", new String[]{user.getRole().name()})
                     .claim("username", user.getUsername())
-                    .claim("id", user.getId())
+                    .claim("id", user.getId().toString())
                     .build();
             SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claimsSet);
             signedJWT.sign(signer);
@@ -75,28 +75,28 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("មានបញ្ហាក្នុងការបង្កើតតូខិន", e);
         }
     }
- @Override
- @Transactional
- public void register(RegisterRequest registerRequest) {
-     if (userRepository.existsByEmail(registerRequest.email())) {
-         throw new RuntimeException("Email is already registered");
-     }
-     if (userRepository.existsByUsername(registerRequest.username())) {
-         throw new RuntimeException("Username is already taken");
-     }
-     User user = userMapper.toEntity(registerRequest);
-     user.setPassword(passwordEncoder.encode(registerRequest.password()));
-     User savedUser = userRepository.save(user);
-     if ("FARMER".equals(savedUser.getRole().name())) {
-         Farmer farmer = new Farmer();
-         farmer.setUser(savedUser);
-         farmer.setFullName(registerRequest.fullName());
-         farmer.setPhone(registerRequest.phone());
-         farmer.setProvince(registerRequest.province());
-         farmer.setProfileImage(registerRequest.profileImage());
 
+    @Override
+    @Transactional
+    public void register(RegisterRequest registerRequest) {
+        if (userRepository.existsByEmail(registerRequest.email())) {
+            throw new RuntimeException("Email is already registered");
+        }
+        if (userRepository.existsByUsername(registerRequest.username())) {
+            throw new RuntimeException("Username is already taken");
+        }
+        User user = userMapper.toEntity(registerRequest);
+        user.setPassword(passwordEncoder.encode(registerRequest.password()));
+        User savedUser = userRepository.save(user);
+        if ("FARMER".equals(savedUser.getRole().name())) {
+            Farmer farmer = new Farmer();
+            farmer.setUser(savedUser);
+            farmer.setFullName(registerRequest.fullName());
+            farmer.setPhone(registerRequest.phone());
+            farmer.setProvince(registerRequest.province());
+            farmer.setProfileImage(registerRequest.profileImage());
 
-         farmerRepository.save(farmer);
-     }
- }
+            farmerRepository.save(farmer);
+        }
+    }
 }

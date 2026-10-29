@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +30,7 @@ public class FarmerServiceImpl implements FarmerService {
 
     @Override
     @Transactional(readOnly = true)
-    public FarmerResponse getFarmerById(Long id) {
+    public FarmerResponse getFarmerById(UUID id) {
         Farmer farmer = farmerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Farmer profile not found with id: " + id));
         return farmerMapper.toResponse(farmer);
@@ -45,7 +46,7 @@ public class FarmerServiceImpl implements FarmerService {
 
     @Override
     @Transactional
-    public FarmerResponse updateFarmer(Long id, FarmerRequest request) {
+    public FarmerResponse updateFarmer(UUID id, FarmerRequest request) {
         Farmer farmer = farmerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Farmer profile not found with id: " + id));
 
@@ -59,18 +60,18 @@ public class FarmerServiceImpl implements FarmerService {
 
     @Override
     @Transactional
-    public void deleteFarmer(Long id) {
+    public void deleteFarmer(UUID id) {
         if (!farmerRepository.existsById(id)) {
             throw new ResourceNotFoundException("Farmer profile not found with id: " + id);
         }
         farmerRepository.deleteById(id);
     }
+
     @Override
     @Transactional
-    public FarmerResponse updateProfileFarmer(Long id, FarmerRequest request) {
-
+    public FarmerResponse updateProfileFarmer(UUID id, FarmerRequest request) {
         Farmer farmer = farmerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Farmer profile not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Farmer profile not found with id: " + id));
         farmer.setFullName(request.fullName());
         farmer.setPhone(request.phone());
         farmer.setProvince(request.province());

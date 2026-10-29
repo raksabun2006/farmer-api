@@ -1,6 +1,8 @@
 package co.cambodia.farmer.dto.category;
 
+import java.util.UUID;
+
 public record CategoryResponse(
-        Long id,
+        UUID id,
         String name
 ) {}

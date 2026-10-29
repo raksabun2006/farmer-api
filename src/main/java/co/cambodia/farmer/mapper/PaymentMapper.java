@@ -1,8 +1,5 @@
 package co.cambodia.farmer.mapper;
 
-
-
-
 import co.cambodia.farmer.domain.Payment;
 import co.cambodia.farmer.dto.peyment.PaymentResponse;
 import org.springframework.stereotype.Component;
@@ -23,7 +20,9 @@ public class PaymentMapper {
                 payment.getCurrency(),
                 payment.getStatus(),
                 payment.getCreatedAt(),
-                payment.getOrder() != null ? payment.getOrder().getId() : null
+                payment.getOrder() != null ? payment.getOrder().getId() : null,
+                payment.getQrString(),
+                payment.getExpiresAt()
         );
     }
 }

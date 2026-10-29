@@ -2,9 +2,9 @@ package co.cambodia.farmer.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "farmers")
@@ -15,7 +15,8 @@ import java.util.List;
 public class Farmer {
 
     @Id
-    private Long id;
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;
 
     @OneToOne
     @MapsId

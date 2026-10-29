@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/messages")
@@ -26,8 +27,8 @@ public class MessageController {
 
     @GetMapping("/conversation")
     public ResponseEntity<List<MessageResponse>> getConversation(
-            @RequestParam("user1") Long user1,
-            @RequestParam("user2") Long user2) {
+            @RequestParam("user1") UUID user1,
+            @RequestParam("user2") UUID user2) {
         List<MessageResponse> conversation = messageService.getConversation(user1, user2);
         return ResponseEntity.ok(conversation);
     }

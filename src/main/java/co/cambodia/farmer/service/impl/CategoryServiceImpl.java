@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public CategoryResponse getCategoryById(Long id) {
+    public CategoryResponse getCategoryById(UUID id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
         return categoryMapper.toResponse(category);
@@ -45,7 +46,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public CategoryResponse updateCategory(Long id, CategoryRequest request) {
+    public CategoryResponse updateCategory(UUID id, CategoryRequest request) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
         category.setName(request.name());
@@ -54,7 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public void deleteCategory(Long id) {
+    public void deleteCategory(UUID id) {
         if (!categoryRepository.existsById(id)) {
             throw new ResourceNotFoundException("Category not found with id: " + id);
         }

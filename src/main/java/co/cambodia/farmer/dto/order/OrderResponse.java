@@ -3,13 +3,14 @@ package co.cambodia.farmer.dto.order;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 public record OrderResponse(
-        Long id,
+        UUID id,
         BigDecimal totalAmount,
         String status,
         LocalDateTime orderDate,
-        Long customerId,
+        UUID customerId,
         String customerUsername,
         List<OrderItemResponse> items
 ) {}

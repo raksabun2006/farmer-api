@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.UUID;
+
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/v1/orders")
@@ -23,7 +25,7 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderResponse> getOrderById(@PathVariable Long id) {
+    public ResponseEntity<OrderResponse> getOrderById(@PathVariable UUID id) {
         return ResponseEntity.ok(orderService.getOrderById(id));
     }
 
@@ -33,17 +35,17 @@ public class OrderController {
     }
 
     @GetMapping("/customer/{customerId}")
-    public ResponseEntity<List<OrderResponse>> getOrdersByCustomer(@PathVariable Long customerId) {
+    public ResponseEntity<List<OrderResponse>> getOrdersByCustomer(@PathVariable UUID customerId) {
         return ResponseEntity.ok(orderService.getOrdersByCustomerId(customerId));
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<OrderResponse> updateOrderStatus(@PathVariable Long id, @RequestParam String status) {
+    public ResponseEntity<OrderResponse> updateOrderStatus(@PathVariable UUID id, @RequestParam String status) {
         return ResponseEntity.ok(orderService.updateOrderStatus(id, status));
     }
 
     @PostMapping("/{id}/cancel")
-    public ResponseEntity<Void> cancelOrder(@PathVariable Long id) {
+    public ResponseEntity<Void> cancelOrder(@PathVariable UUID id) {
         orderService.cancelOrder(id);
         return ResponseEntity.ok().build();
     }

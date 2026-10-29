@@ -3,9 +3,9 @@ spring:
     name: farmer
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${URL}
-    username: ${USERNAME}
-    password: ${PASSWORD}
+    url: ${DB_URL:jdbc:postgresql://localhost:5438/mydb}
+    username: ${DB_USERNAME:farmer_user}
+    password: ${DB_PASSWORD:qwer}
   jpa:
     hibernate:
       ddl-auto: update
@@ -16,44 +16,22 @@ spring:
 
 server:
   port: 2829
-bakong:
-  api:
-    token: ${token}
-  account:
-    id: ${accountId}
-  merchant:
-    name: BUN RAKSA
-    city: Phnom Penh
-#aba:
-#  payway:
-#    merchant:
-#      id: 126061814172620
-#    api:
-#      key: your_sandbox_api_key
-#      url: https://checkout-sandbox.payway.com.kh/api/payment-gateway/v3/purchase
-#aba:
-#  payway:
-#    api-url: https://checkout-sandbox.payway.com.kh/api/payment-gateway/v1/payments/generate-qr
-#    merchant-id: "126061814172620"  # Use your merchant ID here
-#    api-key: "YOUR_ABA_API_KEY"
-#bakong:
-#  api:
-#    base-url: "https://api-bakong-sandbox.nbc.org.kh"
-#    # Use ABA's public sandbox testing token
-#    token: "STR768261814172620743a6d2138b1395b0"
-#  account:
-#    # Use ABA's official public sandbox merchant ID
-#    id: "ec435678"
-#  merchant:
-#    name: "BUN RAKSA"
-#    city: "PHNOM PENH"
-#  account:
-#    id: "0968782196@acld"
 
-  # កុំភ្លេចដូរឈ្មោះ Merchant ឱ្យត្រូវនឹងឈ្មោះគណនីអេស៊ីលីដារបស់អ្នក
-#  merchant:
-#    name: "BUN RAKSA ACLEDA"
-#    city: "PHNOM PENH"
+bakong:
+  api-url: ${BAKONG_API_URL:https://api-bakong.nbc.gov.kh/v1/check_transaction_by_md5}
+  token: ${BAKONG_TOKEN:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjoiZjA2MjkwNDRlN2Y1NDA3NCJ9LCJpYXQiOjE3OTMxNjIwNzUsImV4cCI6MTgwMDkzODA3NX0.NhP7V51E0roGgXDW9gh44svbR9civRm-JrmianlA-bs}
+  account-id: ${BAKONG_ACCOUNT_ID:bun_raksa@bkrt}
+  merchant-name: ${BAKONG_MERCHANT_NAME:BUN RAKSA}
+  city: ${BAKONG_CITY:Phnom Penh}
+  timeout-ms: ${BAKONG_TIMEOUT_MS:10000}
+  api:
+    token: ${BAKONG_TOKEN:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjoiZjA2MjkwNDRlN2Y1NDA3NCJ9LCJpYXQiOjE3OTMxNjIwNzUsImV4cCI6MTgwMDkzODA3NX0.NhP7V51E0roGgXDW9gh44svbR9civRm-JrmianlA-bs}
+  account:
+    id: ${BAKONG_ACCOUNT_ID:bun_raksa@bkrt}
+  merchant:
+    name: ${BAKONG_MERCHANT_NAME:BUN RAKSA}
+    city: ${BAKONG_CITY:Phnom Penh}
+
 app:
   jwt:
-    secret: abcdefghijklmnopqrstuvwxyz1234567890YOUR_SECRET_KEY_HERE
+    secret: ${JWT_SECRET:9f3b7c1e5a2d48f0b6e1c9a47d3f8205e6b1a4c7d92f0e83b5a6c1d4e7f2093a}

@@ -1,11 +1,10 @@
 package co.cambodia.farmer.domain;
 
-
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name ="messages")
@@ -14,11 +13,12 @@ import java.time.LocalDateTime;
 public class Message {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sender_id",nullable = false)
+    @JoinColumn(name = "sender_id", nullable = false)
     private User sender;
 
     @ManyToOne(fetch = FetchType.LAZY)

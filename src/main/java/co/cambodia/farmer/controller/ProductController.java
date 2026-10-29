@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.UUID;
+
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/v1/products")
@@ -23,7 +25,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable UUID id) {
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
@@ -33,22 +35,22 @@ public class ProductController {
     }
 
     @GetMapping("/farmer/{farmerId}")
-    public ResponseEntity<List<ProductResponse>> getProductsByFarmer(@PathVariable Long farmerId) {
+    public ResponseEntity<List<ProductResponse>> getProductsByFarmer(@PathVariable UUID farmerId) {
         return ResponseEntity.ok(productService.getProductsByFarmer(farmerId));
     }
 
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<List<ProductResponse>> getProductsByCategory(@PathVariable Long categoryId) {
+    public ResponseEntity<List<ProductResponse>> getProductsByCategory(@PathVariable UUID categoryId) {
         return ResponseEntity.ok(productService.getProductsByCategory(categoryId));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductRequest request) {
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable UUID id, @Valid @RequestBody ProductRequest request) {
         return ResponseEntity.ok(productService.updateProduct(id, request));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable UUID id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }

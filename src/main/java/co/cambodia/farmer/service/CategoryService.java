@@ -3,11 +3,12 @@ package co.cambodia.farmer.service;
 import co.cambodia.farmer.dto.category.CategoryRequest;
 import co.cambodia.farmer.dto.category.CategoryResponse;
 import java.util.List;
+import java.util.UUID;
 
 public interface CategoryService {
     CategoryResponse createCategory(CategoryRequest request);
-    CategoryResponse getCategoryById(Long id);
+    CategoryResponse getCategoryById(UUID id);
     List<CategoryResponse> getAllCategories();
-    CategoryResponse updateCategory(Long id, CategoryRequest request);
-    void deleteCategory(Long id);
+    CategoryResponse updateCategory(UUID id, CategoryRequest request);
+    void deleteCategory(UUID id);
 }

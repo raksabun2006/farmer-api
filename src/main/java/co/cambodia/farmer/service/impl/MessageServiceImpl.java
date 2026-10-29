@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,7 +45,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     @Transactional
-    public List<MessageResponse> getConversation(Long user1, Long user2) {
+    public List<MessageResponse> getConversation(UUID user1, UUID user2) {
         return messageRepository.findConversation(user1, user2)
                 .stream()
                 .map(messageMapper::toResponse)

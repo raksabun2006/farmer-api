@@ -1,12 +1,13 @@
 package co.cambodia.farmer.dto.message;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public record MessageResponse(
-        Long id,
-        Long senderId,
+        UUID id,
+        UUID senderId,
         String senderName,
-        Long receiverId,
+        UUID receiverId,
         String receiverName,
         String content,
         LocalDateTime timestamp

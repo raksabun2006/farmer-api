@@ -1,7 +1,9 @@
 package co.cambodia.farmer.dto.farmer;
 
+import java.util.UUID;
+
 public record FarmerResponse(
-        Long id,
+        UUID id,
         String fullName,
         String phone,
         String province,

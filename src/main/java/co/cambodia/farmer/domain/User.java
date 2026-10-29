@@ -1,14 +1,12 @@
 package co.cambodia.farmer.domain;
 
-import co.cambodia.farmer.domain.Order;
-import co.cambodia.farmer.domain.Role;
 import jakarta.persistence.*;
 import lombok.*;
-
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -18,8 +16,9 @@ import java.util.List;
 @AllArgsConstructor
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;
 
     @Column(unique = true, nullable = false)
     private String username;
@@ -36,9 +35,9 @@ public class User {
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
-
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Farmer farmerProfile;
+
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> sentMessages = new ArrayList<>();
 
